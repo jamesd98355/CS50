@@ -1,0 +1,3 @@
+/Users/jamesdonnelly/Desktop/CS50/plurality/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/jamesdonnelly/Desktop/CS50/plurality/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/jamesdonnelly/Desktop/CS50/plurality/cmake-build-debug/CMakeFiles/plurality.dir

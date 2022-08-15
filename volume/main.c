@@ -7,8 +7,16 @@
 // Number of bytes in .wav header
 const int HEADER_SIZE = 44;
 
+
+//3 command line arguments
+// input file
+// output file
+// factor amount by which the volume of the original audio file should be scaled
+
+
 int main(int argc, char *argv[])
 {
+
     // Check command-line arguments
     if (argc != 4)
     {
@@ -35,7 +43,19 @@ int main(int argc, char *argv[])
 
     // TODO: Copy header from input file to output file
 
+    uint8_t header[HEADER_SIZE];
+    fread(header, HEADER_SIZE, 1, input);
+    fwrite(header, HEADER_SIZE, 1, output);
+
     // TODO: Read samples from input file and write updated data to output file
+    uint16_t buffer;
+
+    while(fread(&buffer, sizeof(uint16_t), 1, input))
+    {
+        //update volume of audio file with factor sieze
+        buffer *= factor;
+        fwrite(&buffer, sizeof(uint16_t), 1, output);
+    }
 
     // Close files
     fclose(input);

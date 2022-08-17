@@ -1,0 +1,3 @@
+/Users/janeowen/Desktop/CS50/recover/cmake-build-debug/CMakeFiles/recover.dir
+/Users/janeowen/Desktop/CS50/recover/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/janeowen/Desktop/CS50/recover/cmake-build-debug/CMakeFiles/rebuild_cache.dir

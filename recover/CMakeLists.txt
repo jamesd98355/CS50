@@ -3,4 +3,4 @@ project(recover C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(recover main.c)
+add_executable(recover recover.c)

@@ -22,24 +22,26 @@ const unsigned int N = 26;
 // Hash table
 node *table[N];
 
+//variable to count number of words as you input them into hashtable
+int total_words;
+
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
 {
     // TODO
     int hash_number = hash(word);
+    node *cursor = table[hash_number]; // cursor is set to first node in the list
 
     // check this linked list for word
     if (table[hash_number] == NULL) // empty linked list
     {
         return false;
     }
+
     // linked list has at least one node
-    node *cursor;
-    do
+    while (cursor != NULL); //reached end of list
     {
         // traverse linked list and compare values to word
-        cursor = table[hash_number]; // cursor is set to first node in the list
-
         if (strcasecmp(cursor->word, word)) //compare strings case insensitively
         {
             return true;
@@ -47,7 +49,7 @@ bool check(const char *word)
         {
             cursor = cursor->next;
         }
-    } while (cursor->next != NULL); //reached end of list
+    }
     return false; // hasn't found word in the hash specific linked list
 }
 
@@ -101,8 +103,8 @@ bool load(const char *dictionary)
             n->next = table[hash_number];
             table[hash_number] = n;
         }
+        total_words++;
     }
-
     return false;
 }
 
@@ -110,12 +112,30 @@ bool load(const char *dictionary)
 unsigned int size(void)
 {
     // TODO
-    return 0;
+    return total_words;
 }
 
 // Unloads dictionary from memory, returning true if successful, else false
 bool unload(void)
 {
+    //set cursor to next node and delete temp as to not lose the next address as you delete
+    node *tmp;
+    node *cursor;
     // TODO
+    //iterate through hashtable (array of linked lists)
+    for (int i = 0; i < N-1; i++)
+    {
+        //iterate through linked lists freeing every node
+        cursor = table[i];
+
+        while(cursor != NULL)
+        {
+            tmp = cursor;
+            cursor = cursor->next;
+            free(temp);
+        }
+        free(temp);
+        free(cursor);
+    }
     return false;
 }

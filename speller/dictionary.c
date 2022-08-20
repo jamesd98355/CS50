@@ -2,6 +2,9 @@
 
 #include <ctype.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "dictionary.h"
 
@@ -24,31 +27,28 @@ bool check(const char *word)
 {
     // TODO
     int hash_number = hash(word);
-    node* cursor;
 
     // check this linked list for word
-    if (table[hash_number] == null) // empty linked list
+    if (table[hash_number] == NULL) // empty linked list
     {
         return false;
-    } else // linked list has at least one node
-    {
-        while (cursor->next != null) // hasn't reached the end of list
-        {
-            // traverse linked list and compare values to word
-            cursor = table[hash_number]; // cursor is set to first node in the list
-
-            if (strcasecmp(cursor->word, word)) //compare strings case insensitively
-            {
-                return true;
-            } else // not match current node
-            {
-                cursor = cursor->next;
-            }
-        }
-        return false; // hasn't found word in the hash specific linked list
     }
+    // linked list has at least one node
+    node *cursor;
+    do
+    {
+        // traverse linked list and compare values to word
+        cursor = table[hash_number]; // cursor is set to first node in the list
 
-    return false;
+        if (strcasecmp(cursor->word, word)) //compare strings case insensitively
+        {
+            return true;
+        } else // not match current node
+        {
+            cursor = cursor->next;
+        }
+    } while (cursor->next != NULL); //reached end of list
+    return false; // hasn't found word in the hash specific linked list
 }
 
 // Hashes word to a number
@@ -62,38 +62,39 @@ unsigned int hash(const char *word)
 bool load(const char *dictionary)
 {
     char *word[LENGTH];
-    *node node;
+
     // TODO
     //open dictionary file
-    File *dictionary = fopen(dictionary, 'r');
-    if(!dictionary)
+    FILE *dict = fopen(dictionary, "r");
+    if(!dict)
     {
-        printf("Could not read file!\n")
-        return;
+        printf("Could not read file!\n");
+        return 1;
     }
 
     //read strings one at a time
-    while (fscanf(dictionary, "%s", word) != EOF) // scan until fscanf reaches end of file
+    while (fscanf(dict, "%s", *word) != EOF) // scan until fscanf reaches end of file
     {
         //create a new node for each word
         node *n = malloc(sizeof(node)); //enough memory for the max length word + \0
         if(!n) // if malloc returns null
         {
-            printf("Not enough memory for malloc.\n")
-            return;
+            printf("Not enough memory for malloc.\n");
+            return 1;
         }
-        strcpy(n->word, word);
-        n->next = null;
+        //set values for new node
+        strcpy(n->word, *word);
+        n->next = NULL;
 
         //hash word to obtain a hash value
 
-        int hash_number = hash(word);
+        int hash_number = hash(*word);
         //insert node into hash table at that location
 
         //if linked list empty make current node the first node
-        if (table[hash_number] == null)
+        if (table[hash_number] == NULL)
         {
-            table[hash_number] = node;
+            table[hash_number] = n;
         }else //already a node
         {
             //point node next to first node and make node the first in the list

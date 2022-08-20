@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <strings.h>
 
 #include "dictionary.h"
 
@@ -23,7 +24,7 @@ const unsigned int N = 26;
 node *table[N];
 
 //variable to count number of words as you input them into hashtable
-int total_words;
+int total_words = 0;
 
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
@@ -39,10 +40,10 @@ bool check(const char *word)
     }
 
     // linked list has at least one node
-    while (cursor != NULL); //reached end of list
+    while (cursor != NULL) //reached end of list
     {
         // traverse linked list and compare values to word
-        if (strcasecmp(cursor->word, word)) //compare strings case insensitively
+        if (strcasecmp(cursor->word, word) == 0) //compare strings case insensitively
         {
             return true;
         } else // not match current node
@@ -63,49 +64,50 @@ unsigned int hash(const char *word)
 // Loads dictionary into memory, returning true if successful, else false
 bool load(const char *dictionary)
 {
-    char *word[LENGTH];
+    char word[LENGTH];
 
     // TODO
     //open dictionary file
     FILE *dict = fopen(dictionary, "r");
-    if(!dict)
+    if(dict == NULL)
     {
         printf("Could not read file!\n");
-        return 1;
+        return false;
     }
 
     //read strings one at a time
-    while (fscanf(dict, "%s", *word) != EOF) // scan until fscanf reaches end of file
+    while (fscanf(dict, "%s", word) != EOF) // scan until fscanf reaches end of file
     {
         //create a new node for each word
-        node *n = malloc(sizeof(node)); //enough memory for the max length word + \0
-        if(!n) // if malloc returns null
+        node *n = malloc(sizeof(node)); // create memory for new node
+        if(n == NULL) // if malloc returns null
         {
             printf("Not enough memory for malloc.\n");
-            return 1;
+            return false;
         }
         //set values for new node
-        strcpy(n->word, *word);
+        strcpy(n->word, word);
         n->next = NULL;
 
         //hash word to obtain a hash value
 
-        int hash_number = hash(*word);
+        int hash_number = hash(word);
         //insert node into hash table at that location
 
         //if linked list empty make current node the first node
         if (table[hash_number] == NULL)
         {
             table[hash_number] = n;
-        }else //already a node
+        }else //already a node in linked list
         {
-            //point node next to first node and make node the first in the list
+            //point new node.next to first node and make node the first in the list
             n->next = table[hash_number];
             table[hash_number] = n;
         }
         total_words++;
     }
-    return false;
+    fclose(dict);
+    return true;
 }
 
 // Returns number of words in dictionary if loaded, else 0 if not yet loaded
@@ -123,7 +125,7 @@ bool unload(void)
     node *cursor;
     // TODO
     //iterate through hashtable (array of linked lists)
-    for (int i = 0; i < N-1; i++)
+    for (int i = 0; i < N; i++)
     {
         //iterate through linked lists freeing every node
         cursor = table[i];
@@ -132,10 +134,8 @@ bool unload(void)
         {
             tmp = cursor;
             cursor = cursor->next;
-            free(temp);
+            free(tmp);
         }
-        free(temp);
-        free(cursor);
     }
-    return false;
+    return true;
 }

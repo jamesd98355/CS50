@@ -1,4 +1,7 @@
 import os
+from this import d
+
+from django.shortcuts import render
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
@@ -111,13 +114,45 @@ def logout():
 @login_required
 def quote():
     """Get stock quote."""
+    if request.method == "POST":
+        pass
+    else:
+        return render_template("quote.html")
+    # user inputs stock symbol
     return apology("TODO")
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
-    return apology("TODO")
+    if request.method == "POST":
+        # take name (username) and password (confirmation) as fields on a post request
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirmation")
+        
+        # validate user fields
+        if not username:
+            return apology("must provide username", 403)
+        elif not password:
+            return apology("must provide password", 403)
+        elif password != confirm_password:
+            return apology("Passwords do not match!", 403)
+
+    
+        # add account to db
+
+        try:
+            db.execute("INSERT INTO users (username, hash) VALUES (?,?)", username, generate_password_hash(password))
+            return redirect("/")
+        except:
+            return apology("Username already taken!")
+
+    else: #get request
+        return render_template("register.html")
+    # return apology("TODO")
+
+
 
 
 @app.route("/sell", methods=["GET", "POST"])
